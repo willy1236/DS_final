@@ -2,12 +2,12 @@
 name = "ds-final"
 version = "0.1.0"
 description = ""
-authors = ["willy1236 <66502303+willy1236@users.noreply.github.com>"]
+authors = []
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.13"
-
+pyqt6 = "^6.7.1"
 
 [build-system]
 requires = ["poetry-core"]
