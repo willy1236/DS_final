@@ -4,7 +4,8 @@ from PyQt6.QtWidgets import (QApplication, QHBoxLayout, QMainWindow,
                              QPushButton, QToolBar, QWidget)
 
 from modules.bst_view import BSTModule
-from modules.raw_stone_view import ModuleThree, RawStonesModule
+from modules.raw_stone_view import RawStonesModule
+from modules.transport_view import TransportModule
 
 
 class MainWindow(QMainWindow):
@@ -20,7 +21,7 @@ class MainWindow(QMainWindow):
         self.modules = {
             "未加工石頭管理": RawStonesModule(),
             "二元搜尋樹": BSTModule(),
-            "模組三": ModuleThree()
+            "運輸管理": TransportModule()
         }
         
         self.create_toolbar()

@@ -1,13 +1,14 @@
 from dataclasses import dataclass
 from enum import Enum
-from random import randint, choice
+from random import choice, randint
+
 
 class StoneType(Enum):
-    Marble = "大理石"
-    Granite = "花崗岩"
-    Quartz = "石英"
-    Jasper = "碧玉"
-    Malachite = "孔雀石"
+    TaiwanJade = "豐田玉"
+    BlackJade = "墨玉"
+    Rhodonite = "玫瑰石"
+    GoldenGourdStone = "金瓜石"
+    Bloodstone = "雞血石"
 
 stonetype_lst = list(StoneType)
 
@@ -29,7 +30,6 @@ class TreeNode:
         self.stone: Stone = stone
         self.left: TreeNode = None 
         self.right: TreeNode = None
-        self.parent: TreeNode = None
 
 class StoneBinaryTree():
     def __init__(self, stones: list[Stone]):

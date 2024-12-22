@@ -1,5 +1,4 @@
-from PyQt6.QtWidgets import (QFrame, QLabel, QProgressBar, QPushButton,
-                             QTableWidget, QTableWidgetItem, QVBoxLayout)
+from PyQt6.QtWidgets import QLabel, QProgressBar, QPushButton, QTableWidgetItem
 
 from modules.base import BaseModule
 from stones import Stone
@@ -10,10 +9,7 @@ class RawStonesModule(BaseModule):
         super().__init__("未加工石頭管理")
 
         # 左側面板
-        panel = QFrame()
-        panel.setFrameStyle(QFrame.Shape.Box)
-        panel.setFixedWidth(200)
-        left_layout = QVBoxLayout(panel)
+        panel = self.create_left_panel()
 
         self.add_btn = QPushButton('新增石頭')
         self.sort_btn = QPushButton('開始排序')
@@ -22,11 +18,11 @@ class RawStonesModule(BaseModule):
         self.add_btn.clicked.connect(self.add_raw_stone)
         self.sort_btn.clicked.connect(self.sort_raw_stones)
         
-        left_layout.addWidget(self.add_btn)
-        left_layout.addWidget(self.sort_btn)
-        left_layout.addWidget(QLabel('進度：'))
-        left_layout.addWidget(self.sorting_progress)
-        left_layout.addStretch()
+        panel.layout().addWidget(self.add_btn)
+        panel.layout().addWidget(self.sort_btn)
+        panel.layout().addWidget(QLabel('進度：'))
+        panel.layout().addWidget(self.sorting_progress)
+        panel.layout().addStretch()
             
         self.layout().addWidget(panel)
         
@@ -34,9 +30,7 @@ class RawStonesModule(BaseModule):
         # self.input_1.move(20,20)
 
         # 表格
-        self.table = QTableWidget()
-        self.table.setColumnCount(6)
-        self.table.setHorizontalHeaderLabels(["編號", "長度", "寬度", "高度", "重量", "材質"])
+        self.table = self.create_stone_table()
         self.layout().addWidget(self.table)
 
     def add_raw_stone(self):
@@ -68,10 +62,3 @@ class RawStonesModule(BaseModule):
             self._update_table(self.table)
 
         self.sorting_progress.setValue(100)
-
-class ModuleThree(BaseModule):
-    def __init__(self):
-        super().__init__("模組三")
-        # 在這裡添加模組三特有的UI元素
-        btn = QPushButton("模組三按鈕")
-        self.layout().addWidget(btn)
