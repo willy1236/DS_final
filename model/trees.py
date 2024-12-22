@@ -1,30 +1,6 @@
-from dataclasses import dataclass
-from enum import Enum
-from random import choice, randint
+from .stones import Stone
 
 
-class StoneType(Enum):
-    TaiwanJade = "豐田玉"
-    BlackJade = "墨玉"
-    Rhodonite = "玫瑰石"
-    GoldenGourdStone = "金瓜石"
-    Bloodstone = "雞血石"
-
-stonetype_lst = list(StoneType)
-
-@dataclass
-class Stone():
-    number: int
-    length: int
-    width: int
-    height: int
-    weight: int
-    material: StoneType
-
-    @classmethod
-    def generate(cls, number: int):
-        return cls(number, randint(5, 20), randint(5, 20), randint(5, 20), randint(50, 1000), choice(stonetype_lst))
-    
 class TreeNode:
     def __init__(self, stone):
         self.stone: Stone = stone
@@ -112,4 +88,20 @@ class StoneBinaryTree():
             else:
                 current = current.right
 
+        return result
+    
+    def levelorder(self):
+        queue:list[TreeNode] = []
+        result:list[Stone] = []
+        if self.root:
+            queue.append(self.root)
+        
+        while queue:
+            current = queue.pop(0)
+            result.append(current.stone)
+            if current.left:
+                queue.append(current.left)
+            if current.right:
+                queue.append(current.right)
+        
         return result

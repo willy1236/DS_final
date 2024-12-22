@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QLabel, QProgressBar, QPushButton, QTableWidgetItem
 
 from modules.base import BaseModule
-from stones import Stone
+from model.stones import Stone
 
 
 class RawStonesModule(BaseModule):
@@ -49,7 +49,7 @@ class RawStonesModule(BaseModule):
     def sort_raw_stones(self):
         n = len(self.stones)
         for i in range(1, n):
-            self.sorting_progress.setValue((int(i / n) * 100))
+            self.sorting_progress.setValue((int(i / n * 100)))
             
             # 插入排序
             key = self.stones[i]
@@ -57,8 +57,9 @@ class RawStonesModule(BaseModule):
             while j >= 0 and self.stones[j].weight > key.weight:
                 self.stones[j + 1] = self.stones[j]
                 j -= 1
+                print(i, j)
             self.stones[j + 1] = key
             
-            self._update_table(self.table)
+            # self.update_table()
 
         self.sorting_progress.setValue(100)

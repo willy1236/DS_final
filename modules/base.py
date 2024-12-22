@@ -1,11 +1,16 @@
+from typing import TYPE_CHECKING
+
 from PyQt6.QtWidgets import (QFrame, QHBoxLayout, QTableWidget,
                              QTableWidgetItem, QVBoxLayout, QWidget)
 
-from stones import Stone
+from model.stones import Stone
 
 
 class BaseModule(QWidget):
     stones: list[Stone] = list()
+
+    if TYPE_CHECKING:
+        table: QTableWidget
     
     def __init__(self, name):
         super().__init__()
@@ -31,13 +36,13 @@ class BaseModule(QWidget):
         table.setHorizontalHeaderLabels(["編號", "長度", "寬度", "高度", "重量", "材質"])
         return table
 
-    def _update_table(self, table: QTableWidget, stones: list[Stone] = None):
+    def update_table(self, stones: list[Stone] = None):
         stones = stones or self.stones
         self.table.setRowCount(len(stones))
         for i, stone in enumerate(stones):
-            table.setItem(i, 0, QTableWidgetItem(str(stone.number)))
-            table.setItem(i, 1, QTableWidgetItem(str(stone.length)))
-            table.setItem(i, 2, QTableWidgetItem(str(stone.width)))
-            table.setItem(i, 3, QTableWidgetItem(str(stone.height)))
-            table.setItem(i, 4, QTableWidgetItem(str(stone.weight)))
-            table.setItem(i, 5, QTableWidgetItem(stone.material.value))
+            self.table.setItem(i, 0, QTableWidgetItem(str(stone.number)))
+            self.table.setItem(i, 1, QTableWidgetItem(str(stone.length)))
+            self.table.setItem(i, 2, QTableWidgetItem(str(stone.width)))
+            self.table.setItem(i, 3, QTableWidgetItem(str(stone.height)))
+            self.table.setItem(i, 4, QTableWidgetItem(str(stone.weight)))
+            self.table.setItem(i, 5, QTableWidgetItem(stone.material.value))

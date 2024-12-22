@@ -1,12 +1,10 @@
-import sys
 
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QBrush, QPainter, QPen
 from PyQt6.QtWidgets import (QGroupBox, QGraphicsEllipseItem,
                              QComboBox, QGraphicsScene,
                              QGraphicsTextItem, QGraphicsView, QLabel,
-                             QProgressBar, QPushButton, QTableWidgetItem,
-                             QVBoxLayout, QWidget)
+                             QPushButton, QVBoxLayout, QWidget)
 
 from modules.base import BaseModule
 
@@ -95,9 +93,13 @@ class TransportModule(BaseModule):
         end_group.setLayout(end_layout)
         panel.layout().addWidget(end_group)
         
-        self.path_btn = QPushButton('演算法尋路')
+        self.path_btn = QPushButton('Dijkstra尋路')
+        self.path2_btn = QPushButton('BFS尋路')
+        self.path3_btn = QPushButton('DFS尋路')
         # self.path_btn.clicked.connect(self.find_path)
         panel.layout().addWidget(self.path_btn)
+        panel.layout().addWidget(self.path2_btn)
+        panel.layout().addWidget(self.path3_btn)
         
         panel.layout().addStretch()
         self.layout().addWidget(panel)
