@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import (QApplication, QHBoxLayout, QMainWindow,
 from modules.bst_view import BSTModule
 from modules.raw_stone_view import RawStonesModule
 from modules.transport_view import TransportModule
+from modules.truck_load_view import TruckLoadModule
 
 
 class MainWindow(QMainWindow):
@@ -21,7 +22,8 @@ class MainWindow(QMainWindow):
         self.modules = {
             "未加工石頭管理": RawStonesModule(),
             "二元搜尋樹": BSTModule(),
-            "運輸管理": TransportModule()
+            "運輸管理": TransportModule(),
+            "卡車載重管理": TruckLoadModule()
         }
         
         self.create_toolbar()
