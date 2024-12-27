@@ -1,16 +1,18 @@
-from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QLineEdit, QPushButton, QLabel
 from PyQt6.QtGui import QIntValidator
-from modules.base import BaseModule
+from PyQt6.QtWidgets import (QLabel, QLineEdit, QPushButton, QTableWidget,
+                             QTableWidgetItem)
+
 from model.trees import truck_loader
+from modules.base import BaseModule
+
 
 class TruckLoadModule(BaseModule):
     def __init__(self):
         super().__init__("卡車載重管理")
 
         # 左側面板
-        panel = self.create_left_panel()
-        label = QLabel("最大載重")
-        panel.layout().addWidget(label)
+        panel = self.init_left_panel()
+        panel.layout().addWidget(QLabel("最大載重"))
 
         self.max_capacity_edit = QLineEdit()
         self.max_capacity_edit.setPlaceholderText("輸入最大載重")
@@ -19,18 +21,17 @@ class TruckLoadModule(BaseModule):
         panel.layout().addWidget(self.max_capacity_edit)
 
         self.start_btn = QPushButton('開始載重')
-        self.start_btn.clicked.connect(self.start_trucks_load_thread)
+        self.start_btn.clicked.connect(self.start_trucks_load)
         panel.layout().addWidget(self.start_btn)
         panel.layout().addStretch()
 
-        self.layout().addWidget(panel)
-
+        # 表格
         self.truck_table = QTableWidget()
         self.truck_table.setColumnCount(3)
-        self.truck_table.setHorizontalHeaderLabels(["卡車編號", "總載重", "載運石頭編號"])
+        self.truck_table.setHorizontalHeaderLabels(["卡車編號", "總載重", "載運玉石編號"])
         self.layout().addWidget(self.truck_table)
 
-    def start_trucks_load(self):
+    def trucks_load(self):
         max_capacity = int(self.max_capacity_edit.text())
         stone_unloaded = [stone for stone in self.stones.copy() if stone.weight <= max_capacity]
         truck_number = 0
@@ -46,6 +47,6 @@ class TruckLoadModule(BaseModule):
             
         self.start_btn.setDisabled(False)
 
-    def start_trucks_load_thread(self):
+    def start_trucks_load(self):
         self.start_btn.setDisabled(True)
-        self.executor.submit(self.start_trucks_load)
+        self.executor.submit(self.trucks_load)

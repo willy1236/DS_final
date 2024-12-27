@@ -7,7 +7,7 @@ from model.trees import StoneBinarySearchTree
 class BSTModule(BaseModule):
     def __init__(self):
         super().__init__("二元搜尋樹")
-        panel = self.create_left_panel()
+        panel = self.init_left_panel()
 
         self.preorder_btn = QPushButton('前序遍歷')
         self.inorder_btn = QPushButton('中序遍歷')
@@ -27,8 +27,6 @@ class BSTModule(BaseModule):
         panel.layout().addWidget(QLabel('進度：'))
         panel.layout().addWidget(self.sorting_progress)
         panel.layout().addStretch()
-            
-        self.layout().addWidget(panel)
         
         # 表格
         self.table = self.create_stone_table()

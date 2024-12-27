@@ -15,7 +15,7 @@ from modules.factory_area_view import FactoryAreaModule
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("自動化石頭加工管理系統")
+        self.setWindowTitle("自動化玉石加工管理系統")
         self.setGeometry(100, 100, 1200, 800)
         
         self.central_widget = QWidget()
@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
         self.main_layout = QHBoxLayout(self.central_widget)
         
         self.modules = {
-            "未加工石頭管理": RawStonesModule(),
+            "未加工玉石管理": RawStonesModule(),
             "二元搜尋樹": BSTModule(),
             "運輸管理": TransportModule(),
             "卡車載重管理": TruckLoadModule(),
@@ -39,7 +39,7 @@ class MainWindow(QMainWindow):
         self.content_layout = QHBoxLayout(self.content_widget)
         self.main_layout.addWidget(self.content_widget)
         
-        self.switch_module("未加工石頭管理")
+        self.switch_module("未加工玉石管理")
 
     def create_toolbar(self):
         toolbar = QToolBar()

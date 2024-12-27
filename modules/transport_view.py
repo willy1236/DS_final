@@ -1,4 +1,3 @@
-
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QBrush, QPainter, QPen
 from PyQt6.QtWidgets import (QGroupBox, QGraphicsEllipseItem,
@@ -73,7 +72,7 @@ class TransportModule(BaseModule):
     def __init__(self):
         super().__init__("運輸管理")
         # 左側面板
-        panel = self.create_left_panel()
+        panel = self.init_left_panel()
     
         start_group = QGroupBox("起點")
         start_layout = QVBoxLayout()
@@ -102,18 +101,15 @@ class TransportModule(BaseModule):
         panel.layout().addWidget(self.path3_btn)
         
         panel.layout().addStretch()
-        self.layout().addWidget(panel)
 
         # 圖的視覺化
         self.graph_view = GraphVisualizer()
-        main_layout = QVBoxLayout()
-        main_layout.addWidget(self.graph_view)
+        graph_layout = QVBoxLayout()
+        graph_layout.addWidget(self.graph_view)
         self.label = QLabel('請選擇起點和終點')
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.addWidget(self.label)
+        graph_layout.addWidget(self.label)
 
-        main_container = QWidget()
-        main_container.setLayout(main_layout)
-        self.layout().addWidget(main_container)
-
-
+        graph_container = QWidget()
+        graph_container.setLayout(graph_layout)
+        self.layout().addWidget(graph_container)

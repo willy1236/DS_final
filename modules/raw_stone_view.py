@@ -6,21 +6,21 @@ from model.stones import Stone
 
 class RawStonesModule(BaseModule):
     def __init__(self):
-        super().__init__("未加工石頭管理")
+        super().__init__("未加工玉石管理")
 
         # 左側面板
-        panel = self.create_left_panel()
+        panel = self.init_left_panel()
 
-        self.add_btn = QPushButton('新增石頭')
-        self.add10_btn = QPushButton('新增10個石頭')
-        self.add50_btn = QPushButton('新增50個石頭')
+        self.add_btn = QPushButton('新增玉石')
+        self.add10_btn = QPushButton('新增10個玉石')
+        self.add50_btn = QPushButton('新增50個玉石')
         self.sort_btn = QPushButton('開始排序')
         self.sorting_progress = QProgressBar()
 
         self.add_btn.clicked.connect(self.add_table_stone)
         self.add10_btn.clicked.connect(self.add_raw_stone_10)
         self.add50_btn.clicked.connect(self.add_raw_stone_50)
-        self.sort_btn.clicked.connect(self.sort_raw_stones)
+        self.sort_btn.clicked.connect(self.insertion_sort_raw_stones)
         
         panel.layout().addWidget(self.add_btn)
         panel.layout().addWidget(self.add10_btn)
@@ -29,11 +29,6 @@ class RawStonesModule(BaseModule):
         panel.layout().addWidget(QLabel('進度：'))
         panel.layout().addWidget(self.sorting_progress)
         panel.layout().addStretch()
-            
-        self.layout().addWidget(panel)
-        
-        # self.input_1 = QLineEdit(self)
-        # self.input_1.move(20,20)
 
         # 表格
         self.table = self.create_stone_table()
@@ -47,7 +42,7 @@ class RawStonesModule(BaseModule):
         for _ in range(50):
             self.add_table_stone()
 
-    def sort_raw_stones(self):
+    def insertion_sort_raw_stones(self):
         n = len(self.stones)
         for i in range(1, n):
             self.sorting_progress.setValue((int(i / n * 100)))

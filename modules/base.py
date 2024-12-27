@@ -26,11 +26,12 @@ class BaseModule(QWidget):
         # self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         # layout.addWidget(self.label)
 
-    def create_left_panel(self):
+    def init_left_panel(self):
         panel = QFrame()
         panel.setFrameStyle(QFrame.Shape.Box)
         panel.setFixedWidth(200)
         left_layout = QVBoxLayout(panel)
+        self.layout().addWidget(panel)
         return panel
     
     def create_stone_table(self):

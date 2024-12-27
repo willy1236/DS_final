@@ -1,7 +1,9 @@
-from PyQt6.QtWidgets import QLabel, QLineEdit, QPushButton, QTableWidgetItem
 from PyQt6.QtGui import QIntValidator
-from modules.base import BaseModule
+from PyQt6.QtWidgets import QLabel, QLineEdit, QPushButton, QTableWidgetItem
+
 from model.trees import HashTable
+from modules.base import BaseModule
+
 
 class FinishedProductModule(BaseModule):
     def __init__(self):
@@ -9,10 +11,9 @@ class FinishedProductModule(BaseModule):
 
         self.hash_table = HashTable(1000)
 
-        panel = self.create_left_panel()
+        panel = self.init_left_panel()
 
-        label = QLabel("查詢成品")
-        panel.layout().addWidget(label)
+        panel.layout().addWidget(QLabel("查詢成品"))
 
         self.stone_number_edit = QLineEdit()
         self.stone_number_edit.setPlaceholderText("輸入成品編號")
@@ -28,7 +29,6 @@ class FinishedProductModule(BaseModule):
         panel.layout().addWidget(self.list_all_btn)
         
         panel.layout().addStretch()
-        self.layout().addWidget(panel)
 
         self.finished_table = self.create_stone_table()
         self.layout().addWidget(self.finished_table)

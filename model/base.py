@@ -1,8 +1,10 @@
-from threading import Thread
 from random import randint
+from threading import Thread
 from time import sleep
-from .trees import MaxHeap
+
 from .stones import Stone
+from .trees import MaxHeap
+
 
 class Queue:
     def __init__(self):
@@ -45,7 +47,7 @@ class ProcessingMachine:
             if not self.queue.is_empty:
                 self.now_processing = self.queue.pop()
                 print(f"機器{self.pos}：正在加工 {self.now_processing}")
-                sleep(randint(1, 5))
+                sleep(randint(1, 3))
                 self.now_processing.processing_degree += 1
                 print(f"機器{self.pos}：{self.now_processing} 加工完成")
                 if self.now_processing.processing_degree < 3:
@@ -53,4 +55,3 @@ class ProcessingMachine:
                 self.now_processing = None
             
             sleep(1)
-            

@@ -233,39 +233,50 @@ class TruckTreeNode:
         self.parent: TruckTreeNode = parent
 
 
-def truck_loader(stones:list[Stone], max_capacity:int):
-    total_weight = sum([stone.weight for stone in stones])
+def truck_loader(stones: list[Stone], max_capacity: int):
+    # Branch and Bound 演算法
+    total_weight = sum(stone.weight for stone in stones)
+    
     root = TruckTreeNode(0, 0, total_weight)
     stack = [root]
     best_node = root
+
     while stack:
         node = stack.pop()
-        
-        if node.index < len(stones) and total_weight - node.current_weight > best_node.current_weight:
+
+        # 剪枝: 剩餘重量 + 當前重量無法超越最佳重量
+        if node.index < len(stones) and node.current_weight + node.remain_weight > best_node.current_weight:
             next_stone_weight = stones[node.index].weight
 
+            # 左子節點：選擇當前玉石
             left_weight = node.current_weight + next_stone_weight
             if left_weight <= max_capacity:
                 node.left = TruckTreeNode(node.index + 1, left_weight, node.remain_weight - next_stone_weight, parent=node)
-                stack.append(node.left)
                 if left_weight > best_node.current_weight:
                     best_node = node.left
+                stack.append(node.left)
 
-            node.right = TruckTreeNode(node.index + 1, node.current_weight, node.remain_weight - next_stone_weight, parent=node)
-            stack.append(node.right)
-    
-    # 回推路徑
-    contain_stones:list[Stone] = []
+            # 右子節點：不選擇當前玉石
+            # 剪枝: 當前重量 + 剩餘重量 - 下個玉石重量 無法超越最佳重量
+            if node.current_weight + (node.remain_weight - next_stone_weight) > best_node.current_weight:
+                node.right = TruckTreeNode(node.index + 1, node.current_weight, node.remain_weight - next_stone_weight, parent=node)
+                stack.append(node.right)
+
+    # 回溯路徑
+    contain_stones = []
+    selected_indices = set()
     current = best_node
     while current.parent is not None:
         if current.parent.left == current:
-            contain_stones.append(stones[current.index - 1])
-            stones.remove(stones[current.index - 1])
+            selected_indices.add(current.index - 1)
         current = current.parent
 
-    contain_stones.reverse()
+    contain_stones = [stones[i] for i in selected_indices]
+    remaining_stones = [stone for i, stone in enumerate(stones) if i not in selected_indices]
 
-    return best_node.current_weight, contain_stones, stones
+    return best_node.current_weight, contain_stones, remaining_stones
+
+
 
 class MaxHeap:
     def __init__(self):

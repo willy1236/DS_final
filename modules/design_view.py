@@ -1,7 +1,9 @@
-from PyQt6.QtWidgets import QGraphicsView, QGraphicsScene, QLineEdit, QPushButton, QLabel
 from PyQt6.QtGui import QPixmap
+from PyQt6.QtWidgets import (QGraphicsScene, QGraphicsView, QLabel, QLineEdit,
+                             QPushButton)
+
+from model.trees import MaxHeap, TrieTree
 from modules.base import BaseModule
-from model.trees import TrieTree, MaxHeap
 
 trie_tree = TrieTree()
 trie_tree.insert("apple")
@@ -24,18 +26,16 @@ class DesignModule(BaseModule):
     def __init__(self):
         super().__init__("設計添加")
 
-        panel = self.create_left_panel()
+        panel = self.init_left_panel()
 
         self.heap_btn = QPushButton('開始設計')
         self.heap_btn.clicked.connect(self.start_processing)
         panel.layout().addWidget(self.heap_btn)
         
-        design_label = QLabel("設計樣式")
-        panel.layout().addWidget(design_label)
+        panel.layout().addWidget(QLabel("設計樣式"))
 
         self.design_edit = QLineEdit()
         self.design_edit.setPlaceholderText("輸入設計樣式")
-        # self.max_capacity_edit.setText("1000")
         panel.layout().addWidget(self.design_edit)
 
         self.start_btn = QPushButton('開始設計')
@@ -46,7 +46,6 @@ class DesignModule(BaseModule):
         panel.layout().addWidget(self.label)
 
         panel.layout().addStretch()
-        self.layout().addWidget(panel)
 
         self.grview = QGraphicsView()
         scene = QGraphicsScene()
@@ -63,4 +62,4 @@ class DesignModule(BaseModule):
         if result:
             self.label.setText("找到了")
         else:
-            self.label.setText("沒找到")
+            self.label.setText("沒找到對應的設計")
