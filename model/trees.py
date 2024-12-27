@@ -1,13 +1,14 @@
-from .stones import Stone
-
+from model.stones import Stone
 
 class TreeNode:
+    __slots__ = ['stone', 'left', 'right']
+
     def __init__(self, stone):
         self.stone: Stone = stone
         self.left: TreeNode = None 
         self.right: TreeNode = None
 
-class StoneBinaryTree():
+class StoneBinarySearchTree():
     def __init__(self, stones: list[Stone]):
         self.root: TreeNode = None
         for s in stones:
@@ -107,43 +108,58 @@ class StoneBinaryTree():
         return result
     
 class TrieNode:
-    def __init__(self):
-        self.children = {}
-        self.isEnd = False
+    def __init__(self, char=None):
+        self.char: str = char
+        self.children: list[TrieNode] = list()
 
-class Trie:
+    @property
+    def is_end(self):
+        return len(self.children) == 0
+
+class TrieTree:
     def __init__(self):
         self.root = TrieNode()
+
+    def get_children(self, node:TrieNode, char:str):
+        for child in node.children:
+            if child.char == char:
+                return child
+        return None
 
     def insert(self, word):
         node = self.root
         for char in word:
-            if char not in node.children:
-                node.children[char] = TrieNode()
-            node = node.children[char]
-        node.isEnd = True
+            child = self.get_children(node, char)
+            
+            if not child:
+                new_node = TrieNode(char)
+                node.children.append(new_node)
+                node = new_node
 
     def search(self, word):
         node = self.root
         for char in word:
-            if char not in node.children:
+            child = self.get_children(node, char)
+            if not child:
                 return False
-            node = node.children[char]
-        return node.isEnd
+            node = child
+        
+        return node.is_end
 
     def startsWith(self, prefix):
         node = self.root
         for char in prefix:
-            if char not in node.children:
+            child = self.get_children(node, char)
+            if not child:
                 return False
-            node = node.children[char]
+            node = child
         return True
 
 class HashNode:
     def __init__(self, key, value):
-        self.key = key
-        self.value = value
-        self.next = None
+        self.key: int = key
+        self.value: Stone = value
+        self.next: HashNode = None
 
 class HashTable:
     def __init__(self, capacity=10):
@@ -206,6 +222,8 @@ class HashTable:
             print("None")
 
 class TruckTreeNode:
+    __slots__ = ['current_weight', 'remain_weight', 'index', 'left', 'right', 'parent']
+
     def __init__(self, index:int, current_weight:int, remain_weight:int, parent=None):
         self.current_weight = current_weight
         self.remain_weight = remain_weight
@@ -220,7 +238,6 @@ def truck_loader(stones:list[Stone], max_capacity:int):
     root = TruckTreeNode(0, 0, total_weight)
     stack = [root]
     best_node = root
-
     while stack:
         node = stack.pop()
         
@@ -236,15 +253,87 @@ def truck_loader(stones:list[Stone], max_capacity:int):
 
             node.right = TruckTreeNode(node.index + 1, node.current_weight, node.remain_weight - next_stone_weight, parent=node)
             stack.append(node.right)
-
+    
     # 回推路徑
     contain_stones:list[Stone] = []
     current = best_node
     while current.parent is not None:
         if current.parent.left == current:
             contain_stones.append(stones[current.index - 1])
+            stones.remove(stones[current.index - 1])
         current = current.parent
 
     contain_stones.reverse()
 
-    return best_node.current_weight, contain_stones
+    return best_node.current_weight, contain_stones, stones
+
+class MaxHeap:
+    def __init__(self):
+        self.heap:list[Stone] = []
+
+    def __len__(self):
+        return len(self.heap)
+    
+    def _parent(self, index):
+        return (index - 1) // 2
+
+    def _left_child(self, index):
+        return 2 * index + 1
+
+    def _right_child(self, index):
+        return 2 * index + 2
+
+    def _swap(self, i, j):
+        self.heap[i], self.heap[j] = self.heap[j], self.heap[i]
+
+    def push(self, value:Stone):
+        self.heap.append(value)
+        self._heapify_up(len(self.heap) - 1)
+
+    def _heapify_up(self, index:int):
+        parent = self._parent(index)
+        while index > 0 and self.heap[index].hardness > self.heap[parent].hardness:
+            self._swap(index, parent)
+            index = parent
+            parent = self._parent(index)
+
+    def pop(self):
+        if not self.heap:
+            return None
+        if len(self.heap) == 1:
+            return self.heap.pop()
+        
+        self._swap(0, len(self.heap) - 1)
+        max_value = self.heap.pop()
+        self._heapify_down(0)
+        return max_value
+
+    def _heapify_down(self, index:int):
+        size = len(self.heap)
+        while True:
+            left = self._left_child(index)
+            right = self._right_child(index)
+            largest = index
+
+            if left < size and self.heap[left].hardness > self.heap[largest].hardness:
+                largest = left
+            if right < size and self.heap[right].hardness > self.heap[largest].hardness:
+                largest = right
+
+            if largest == index:
+                break
+
+            self._swap(index, largest)
+            index = largest
+
+    def peek(self):
+        if not self.heap:
+            return None
+        return self.heap[0]
+
+    def __str__(self):
+        return str(self.heap)
+    
+    @property
+    def is_empty(self):
+        return len(self.heap) == 0

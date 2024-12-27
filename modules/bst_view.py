@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QLabel, QProgressBar, QPushButton
 
 from modules.base import BaseModule
-from model.trees import StoneBinaryTree
+from model.trees import StoneBinarySearchTree
 
 
 class BSTModule(BaseModule):
@@ -36,24 +36,24 @@ class BSTModule(BaseModule):
 
     def preorder_sort(self):
         self.sorting_progress.setValue(0)
-        bst = StoneBinaryTree(self.stones)
+        bst = StoneBinarySearchTree(self.stones)
         self.update_table(bst.preorder())
         self.sorting_progress.setValue(100)
 
     def inorder_sort(self):
         self.sorting_progress.setValue(0)
-        bst = StoneBinaryTree(self.stones)
+        bst = StoneBinarySearchTree(self.stones)
         self.update_table(bst.inorder())
         self.sorting_progress.setValue(100)
 
     def postorder_sort(self):
         self.sorting_progress.setValue(0)
-        bst = StoneBinaryTree(self.stones)
+        bst = StoneBinarySearchTree(self.stones)
         self.update_table(bst.postorder())
         self.sorting_progress.setValue(100)
 
     def levelorder_sort(self):
         self.sorting_progress.setValue(0)
-        bst = StoneBinaryTree(self.stones)
+        bst = StoneBinarySearchTree(self.stones)
         self.update_table(bst.levelorder())
         self.sorting_progress.setValue(100)

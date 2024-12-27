@@ -12,15 +12,15 @@ class StoneType(Enum):
 
 stonetype_lst = list(StoneType)
 
-@dataclass
+@dataclass(slots=True)
 class Stone():
     number: int
-    length: int
-    width: int
-    height: int
     weight: int
+    hardness: float
     material: StoneType
+    design: str | None
+    processing_degree: int
 
     @classmethod
     def generate(cls, number: int):
-        return cls(number, randint(5, 20), randint(5, 20), randint(5, 20), randint(50, 1000), choice(stonetype_lst))
+        return cls(number, randint(50, 500), randint(55, 70) / 10, choice(stonetype_lst), None, 0)

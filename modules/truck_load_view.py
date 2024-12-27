@@ -15,11 +15,11 @@ class TruckLoadModule(BaseModule):
         self.max_capacity_edit = QLineEdit()
         self.max_capacity_edit.setPlaceholderText("輸入最大載重")
         self.max_capacity_edit.setValidator(QIntValidator())
-        self.max_capacity_edit.setText("1000")
+        self.max_capacity_edit.setText("500")
         panel.layout().addWidget(self.max_capacity_edit)
 
         self.start_btn = QPushButton('開始載重')
-        self.start_btn.clicked.connect(self.start_trucks_load)
+        self.start_btn.clicked.connect(self.start_trucks_load_thread)
         panel.layout().addWidget(self.start_btn)
         panel.layout().addStretch()
 
@@ -32,18 +32,20 @@ class TruckLoadModule(BaseModule):
 
     def start_trucks_load(self):
         max_capacity = int(self.max_capacity_edit.text())
-        stone_unloaded = self.stones.copy()
+        stone_unloaded = [stone for stone in self.stones.copy() if stone.weight <= max_capacity]
         truck_number = 0
+        self.truck_table.clearContents()
         while stone_unloaded:
-            self.truck_table.setRowCount(truck_number + 1)
-            truck_load_weight, contain = truck_loader(stone_unloaded, max_capacity)
-            for stone in contain:
-                stone_unloaded.remove(stone)
+            truck_load_weight, contain, stone_unloaded = truck_loader(stone_unloaded, max_capacity)
             
+            self.truck_table.setRowCount(truck_number + 1)
             self.truck_table.setItem(truck_number, 0, QTableWidgetItem(str(truck_number + 1)))
             self.truck_table.setItem(truck_number, 1, QTableWidgetItem(str(truck_load_weight)))
             self.truck_table.setItem(truck_number, 2, QTableWidgetItem(", ".join([str(stone.number) for stone in contain])))
             truck_number += 1
-        
+            
+        self.start_btn.setDisabled(False)
 
-        
+    def start_trucks_load_thread(self):
+        self.start_btn.setDisabled(True)
+        self.executor.submit(self.start_trucks_load)

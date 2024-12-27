@@ -7,6 +7,9 @@ from modules.bst_view import BSTModule
 from modules.raw_stone_view import RawStonesModule
 from modules.transport_view import TransportModule
 from modules.truck_load_view import TruckLoadModule
+from modules.design_view import DesignModule
+from modules.finished_product_view import FinishedProductModule
+from modules.factory_area_view import FactoryAreaModule
 
 
 class MainWindow(QMainWindow):
@@ -23,7 +26,11 @@ class MainWindow(QMainWindow):
             "未加工石頭管理": RawStonesModule(),
             "二元搜尋樹": BSTModule(),
             "運輸管理": TransportModule(),
-            "卡車載重管理": TruckLoadModule()
+            "卡車載重管理": TruckLoadModule(),
+            "加工廠區": FactoryAreaModule(),
+            "設計添加": DesignModule(),
+            "成品管理": FinishedProductModule(),
+            
         }
         
         self.create_toolbar()

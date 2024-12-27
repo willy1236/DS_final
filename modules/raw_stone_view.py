@@ -12,13 +12,19 @@ class RawStonesModule(BaseModule):
         panel = self.create_left_panel()
 
         self.add_btn = QPushButton('新增石頭')
+        self.add10_btn = QPushButton('新增10個石頭')
+        self.add50_btn = QPushButton('新增50個石頭')
         self.sort_btn = QPushButton('開始排序')
         self.sorting_progress = QProgressBar()
 
-        self.add_btn.clicked.connect(self.add_raw_stone)
+        self.add_btn.clicked.connect(self.add_table_stone)
+        self.add10_btn.clicked.connect(self.add_raw_stone_10)
+        self.add50_btn.clicked.connect(self.add_raw_stone_50)
         self.sort_btn.clicked.connect(self.sort_raw_stones)
         
         panel.layout().addWidget(self.add_btn)
+        panel.layout().addWidget(self.add10_btn)
+        panel.layout().addWidget(self.add50_btn)
         panel.layout().addWidget(self.sort_btn)
         panel.layout().addWidget(QLabel('進度：'))
         panel.layout().addWidget(self.sorting_progress)
@@ -33,18 +39,13 @@ class RawStonesModule(BaseModule):
         self.table = self.create_stone_table()
         self.layout().addWidget(self.table)
 
-    def add_raw_stone(self):
-        row_count = self.table.rowCount()
-        st = Stone.generate(row_count + 1)
-        self.stones.append(st)
-
-        self.table.setRowCount(row_count + 1)
-        self.table.setItem(row_count, 0, QTableWidgetItem(str(st.number)))
-        self.table.setItem(row_count, 1, QTableWidgetItem(str(st.length)))
-        self.table.setItem(row_count, 2, QTableWidgetItem(str(st.width)))
-        self.table.setItem(row_count, 3, QTableWidgetItem(str(st.height)))
-        self.table.setItem(row_count, 4, QTableWidgetItem(str(st.weight)))
-        self.table.setItem(row_count, 5, QTableWidgetItem(st.material.value))
+    def add_raw_stone_10(self):
+        for _ in range(10):
+            self.add_table_stone()
+    
+    def add_raw_stone_50(self):
+        for _ in range(50):
+            self.add_table_stone()
 
     def sort_raw_stones(self):
         n = len(self.stones)
@@ -57,9 +58,8 @@ class RawStonesModule(BaseModule):
             while j >= 0 and self.stones[j].weight > key.weight:
                 self.stones[j + 1] = self.stones[j]
                 j -= 1
-                print(i, j)
             self.stones[j + 1] = key
             
-            # self.update_table()
-
+            
+        self.update_table()
         self.sorting_progress.setValue(100)
