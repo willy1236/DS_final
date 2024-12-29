@@ -1,45 +1,32 @@
+import os
+
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import (QGraphicsScene, QGraphicsView, QLabel, QLineEdit,
                              QPushButton)
 
-from model.trees import MaxHeap, TrieTree
+from model.trees import StoneMaxHeap, TrieTree
 from modules.base import BaseModule
 
 trie_tree = TrieTree()
-trie_tree.insert("apple")
-trie_tree.insert("banana")
-trie_tree.insert("orange")
-trie_tree.insert("grape")
-trie_tree.insert("peach")
-trie_tree.insert("pear")
-trie_tree.insert("plum")
-trie_tree.insert("pineapple")
-trie_tree.insert("peanut")
-trie_tree.insert("pepper")
-trie_tree.insert("potato")
-trie_tree.insert("pumpkin")
-trie_tree.insert("tomato")
+for path in os.listdir(r"designs"):
+    trie_tree.insert(path[:-4])
 
-max_heap = MaxHeap()
+max_heap = StoneMaxHeap()
 
 class DesignModule(BaseModule):
     def __init__(self):
-        super().__init__("設計添加")
+        super().__init__("設計展示")
 
         panel = self.init_left_panel()
-
-        self.heap_btn = QPushButton('開始設計')
-        self.heap_btn.clicked.connect(self.start_processing)
-        panel.layout().addWidget(self.heap_btn)
         
         panel.layout().addWidget(QLabel("設計樣式"))
 
         self.design_edit = QLineEdit()
-        self.design_edit.setPlaceholderText("輸入設計樣式")
+        self.design_edit.setPlaceholderText("輸入設計樣式或類型")
         panel.layout().addWidget(self.design_edit)
 
-        self.start_btn = QPushButton('開始設計')
-        self.start_btn.clicked.connect(self.start_processing)
+        self.start_btn = QPushButton('設計查詢')
+        self.start_btn.clicked.connect(self.design_search)
         panel.layout().addWidget(self.start_btn)
         
         self.label = QLabel()
@@ -48,18 +35,20 @@ class DesignModule(BaseModule):
         panel.layout().addStretch()
 
         self.grview = QGraphicsView()
-        scene = QGraphicsScene()
+        self.scene = QGraphicsScene()
         #scene.setSceneRect(0, 0, 300, 400)
-        img = QPixmap(r"C:\Users\willy\OneDrive\圖片\螢幕擷取畫面\螢幕擷取畫面 2024-12-24 193252.png")
-        scene.addPixmap(img)
-        self.grview.setScene(scene)
+        img = QPixmap(r"")
+        self.scene.addPixmap(img)
+        self.grview.setScene(self.scene)
         self.layout().addWidget(self.grview)
         
 
-    def start_processing(self):
+    def design_search(self):
         text = self.design_edit.text()
-        result = trie_tree.search(text)
-        if result:
-            self.label.setText("找到了")
+        if trie_tree.start_with(text):
+            lst = trie_tree.list_prefix(text)
+            self.label.setText(f"找到以下設計：\n{'\n'.join(lst)}")
+            self.scene.clear()
+            self.scene.addPixmap(QPixmap(r"designs/" + lst[0] + ".png"))
         else:
-            self.label.setText("沒找到對應的設計")
+            self.label.setText(f"沒找到名為 {text} 的設計")

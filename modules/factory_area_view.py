@@ -3,10 +3,10 @@ from time import sleep
 from PyQt6.QtWidgets import QLabel, QPushButton, QTableWidget, QTableWidgetItem
 
 from model.base import ProcessingMachine
-from model.trees import MaxHeap
+from model.trees import StoneMaxHeap
 from modules.base import BaseModule
 
-max_heap = MaxHeap()
+max_heap = StoneMaxHeap()
 processing_machine = {
     0: [ProcessingMachine(0, 2) ,ProcessingMachine(4, 2), ProcessingMachine(8, 2)],
     1: [ProcessingMachine(0, 5) ,ProcessingMachine(4, 5), ProcessingMachine(8, 5)],

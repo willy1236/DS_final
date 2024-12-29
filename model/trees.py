@@ -1,4 +1,10 @@
+from typing import TypeVar
+from abc import ABC, abstractmethod
+
 from model.stones import Stone
+
+T = TypeVar('T')
+
 
 class TreeNode:
     __slots__ = ['stone', 'left', 'right']
@@ -36,8 +42,8 @@ class StoneBinarySearchTree():
 
     # 中序非遞迴遍歷
     def inorder(self):
-        stack = []
-        current:TreeNode = self.root
+        stack: list[TreeNode] = []
+        current: TreeNode = self.root
         result: list[Stone] = []
         
         while stack or current:
@@ -54,7 +60,7 @@ class StoneBinarySearchTree():
     # 前序非遞迴遍歷
     def preorder(self):
         stack = []
-        current:TreeNode = self.root 
+        current: TreeNode = self.root 
         result: list[Stone] = []
         
         while stack or current:
@@ -71,9 +77,9 @@ class StoneBinarySearchTree():
     # 後序非遞迴遍歷
     def postorder(self):
         stack = []
-        current:TreeNode = self.root
+        current: TreeNode = self.root
         result: list[Stone] = []
-        last_visited:TreeNode = None
+        last_visited: TreeNode = None
         
         while stack or current:
             while current:
@@ -92,8 +98,8 @@ class StoneBinarySearchTree():
         return result
     
     def levelorder(self):
-        queue:list[TreeNode] = []
-        result:list[Stone] = []
+        queue: list[TreeNode] = []
+        result: list[Stone] = []
         if self.root:
             queue.append(self.root)
         
@@ -108,6 +114,8 @@ class StoneBinarySearchTree():
         return result
     
 class TrieNode:
+    __slots__ = ['char', 'children']
+    
     def __init__(self, char=None):
         self.char: str = char
         self.children: list[TrieNode] = list()
@@ -135,6 +143,8 @@ class TrieTree:
                 new_node = TrieNode(char)
                 node.children.append(new_node)
                 node = new_node
+            else:
+                node = child
 
     def search(self, word):
         node = self.root
@@ -146,7 +156,7 @@ class TrieTree:
         
         return node.is_end
 
-    def startsWith(self, prefix):
+    def start_with(self, prefix):
         node = self.root
         for char in prefix:
             child = self.get_children(node, char)
@@ -154,8 +164,30 @@ class TrieTree:
                 return False
             node = child
         return True
+    
+    def list_prefix(self, prefix: str):
+        result = []
+        node = self.root
+        for char in prefix:
+            child = self.get_children(node, char)
+            if not child:
+                return result
+            node = child
+
+        self._dfs(node, prefix, result)
+        return result
+
+    def _dfs(self, node: TrieNode, current_word: str, result: list):
+        if node.is_end:
+            result.append(current_word)
+        
+        for child_node in node.children:
+            self._dfs(child_node, current_word + child_node.char, result)
+        
 
 class HashNode:
+    __slots__ = ['key', 'value', 'next']
+
     def __init__(self, key, value):
         self.key: int = key
         self.value: Stone = value
@@ -263,7 +295,7 @@ def truck_loader(stones: list[Stone], max_capacity: int):
                 stack.append(node.right)
 
     # 回溯路徑
-    contain_stones = []
+    contain_stones: list[Stone] = []
     selected_indices = set()
     current = best_node
     while current.parent is not None:
@@ -277,10 +309,9 @@ def truck_loader(stones: list[Stone], max_capacity: int):
     return best_node.current_weight, contain_stones, remaining_stones
 
 
-
-class MaxHeap:
+class Heap[T](ABC):
     def __init__(self):
-        self.heap:list[Stone] = []
+        self.heap:list[T] = []
 
     def __len__(self):
         return len(self.heap)
@@ -297,16 +328,22 @@ class MaxHeap:
     def _swap(self, i, j):
         self.heap[i], self.heap[j] = self.heap[j], self.heap[i]
 
-    def push(self, value:Stone):
+    @abstractmethod
+    def _heapify_up(self, index: int):
+        ...
+
+    @abstractmethod
+    def _heapify_down(self, index: int):
+        ...
+
+    def peek(self):
+        if not self.heap:
+            return None
+        return self.heap[0]
+    
+    def push(self, value: T):
         self.heap.append(value)
         self._heapify_up(len(self.heap) - 1)
-
-    def _heapify_up(self, index:int):
-        parent = self._parent(index)
-        while index > 0 and self.heap[index].hardness > self.heap[parent].hardness:
-            self._swap(index, parent)
-            index = parent
-            parent = self._parent(index)
 
     def pop(self):
         if not self.heap:
@@ -315,9 +352,24 @@ class MaxHeap:
             return self.heap.pop()
         
         self._swap(0, len(self.heap) - 1)
-        max_value = self.heap.pop()
+        min_value = self.heap.pop()
         self._heapify_down(0)
-        return max_value
+        return min_value
+
+    def __str__(self):
+        return str(self.heap)
+    
+    @property
+    def is_empty(self):
+        return len(self.heap) == 0
+
+class StoneMaxHeap(Heap[Stone]):
+    def _heapify_up(self, index:int):
+        parent = self._parent(index)
+        while index > 0 and self.heap[index].hardness > self.heap[parent].hardness:
+            self._swap(index, parent)
+            index = parent
+            parent = self._parent(index)
 
     def _heapify_down(self, index:int):
         size = len(self.heap)
@@ -336,15 +388,56 @@ class MaxHeap:
 
             self._swap(index, largest)
             index = largest
-
-    def peek(self):
-        if not self.heap:
-            return None
-        return self.heap[0]
-
-    def __str__(self):
-        return str(self.heap)
     
-    @property
-    def is_empty(self):
-        return len(self.heap) == 0
+class DijkstraMinHeap(Heap[tuple[int, int]]):
+    def _heapify_up(self, index: int):
+        parent = self._parent(index)
+        while index > 0 and self.heap[index][1] < self.heap[parent][1]:
+            self._swap(index, parent)
+            index = parent
+            parent = self._parent(index)
+
+    def _heapify_down(self, index: int):
+        size = len(self.heap)
+        while True:
+            left = self._left_child(index)
+            right = self._right_child(index)
+            smallest = index
+
+            if left < size and self.heap[left][1] < self.heap[smallest][1]:
+                smallest = left
+            if right < size and self.heap[right][1] < self.heap[smallest][1]:
+                smallest = right
+
+            if smallest == index:
+                break
+
+            self._swap(index, smallest)
+            index = smallest
+
+class GraphMinHeap(Heap[tuple[int, int, int]]):
+    # Tuple: (weight, node1, node2)
+    def _heapify_up(self, index: int):
+        parent = self._parent(index)
+        while index > 0 and self.heap[index][0] < self.heap[parent][0]:
+            self._swap(index, parent)
+            index = parent
+            parent = self._parent(index)
+
+    def _heapify_down(self, index: int):
+        size = len(self.heap)
+        while True:
+            left = self._left_child(index)
+            right = self._right_child(index)
+            smallest = index
+
+            if left < size and self.heap[left][0] < self.heap[smallest][0]:
+                smallest = left
+            if right < size and self.heap[right][0] < self.heap[smallest][0]:
+                smallest = right
+
+            if smallest == index:
+                break
+
+            self._swap(index, smallest)
+            index = smallest

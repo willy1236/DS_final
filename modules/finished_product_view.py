@@ -48,8 +48,9 @@ class FinishedProductModule(BaseModule):
 
 
     def list_all_stones(self):
-        self.finished_table.setRowCount(len(self.stones))
-        for i, stone in enumerate([stone for stone in self.stones if stone.processing_degree == 3]):
+        finished_stones = [stone for stone in self.stones if stone.processing_degree == 3]
+        self.finished_table.setRowCount(len(finished_stones))
+        for i, stone in enumerate(finished_stones):
             self.hash_table.insert(stone.number, stone)
             self.finished_table.setItem(i, 0, QTableWidgetItem(str(stone.number)))
             self.finished_table.setItem(i, 1, QTableWidgetItem(str(stone.weight)))

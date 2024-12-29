@@ -1,20 +1,21 @@
 from random import randint
 from threading import Thread
 from time import sleep
+from typing import TypeVar
 
 from .stones import Stone
-from .trees import MaxHeap
+from .trees import StoneMaxHeap
 
-
-class Queue:
+T = TypeVar('T')
+class Queue[T]:
     def __init__(self):
-        self.items = list()
+        self.items:list[T] = list()
 
     @property
     def is_empty(self):
         return len(self.items) == 0
     
-    def push(self, item):
+    def push(self, item:T):
         self.items.append(item)
 
     def pop(self):
@@ -26,17 +27,17 @@ class Queue:
         return len(self.items)
 
 class ProcessingMachine:
-    def __init__(self, pos_x, pos_y):
-        self.queue = Queue()
+    def __init__(self, pos_x: int, pos_y: int):
+        self.queue:Queue[Stone] = Queue()
         self.pos = (pos_x, pos_y)
         self.thread = Thread(target=self.process)
-        self.heap: MaxHeap = None
+        self.heap: StoneMaxHeap = None
         self.now_processing: Stone = None
     
     def __len__(self):
         return len(self.queue) + 1 if self.now_processing else len(self.queue)
     
-    def add_stone(self, stone):
+    def add_stone(self, stone: Stone):
         self.queue.push(stone)
     
     def start(self):
