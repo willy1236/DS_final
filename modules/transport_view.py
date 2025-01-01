@@ -121,26 +121,26 @@ class TransportModule(BaseModule):
         end_group.setLayout(end_layout)
         panel.layout().addWidget(end_group)
         
-        self.dijkstra_btn = QPushButton('Dijkstra尋路')
         self.bfs_btn = QPushButton('BFS拜訪')
         self.dfs_btn = QPushButton('DFS拜訪')
         self.prim_btn = QPushButton('Prim演算法')
         self.kruskal_btn = QPushButton('Kruskal演算法')
         self.sollin_btn = QPushButton('Sollin演算法')
+        self.dijkstra_btn = QPushButton('Dijkstra尋路')
         
-        self.dijkstra_btn.clicked.connect(self.dijkstra)
         self.bfs_btn.clicked.connect(self.start_bfs)
         self.dfs_btn.clicked.connect(self.start_dfs)
         self.prim_btn.clicked.connect(self.prim)
         self.kruskal_btn.clicked.connect(self.kruskal)
         self.sollin_btn.clicked.connect(self.sollin)
+        self.dijkstra_btn.clicked.connect(self.dijkstra)
 
-        panel.layout().addWidget(self.dijkstra_btn)
         panel.layout().addWidget(self.bfs_btn)
         panel.layout().addWidget(self.dfs_btn)
         panel.layout().addWidget(self.prim_btn)
         panel.layout().addWidget(self.kruskal_btn)
         panel.layout().addWidget(self.sollin_btn)
+        panel.layout().addWidget(self.dijkstra_btn)
         
         panel.layout().addStretch()
 
